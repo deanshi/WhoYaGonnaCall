@@ -97,7 +97,7 @@ public class ContactsActivity extends ListActivity implements LoaderManager.Load
         } else {
             contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_FILTER_URI, Uri.encode(contactName));
         }
-        return new CursorLoader(this, contactUri, PROJECTION, SELECTION, null, null);
+        return new CursorLoader(this, contactUri, PROJECTION, SELECTION, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
     }
 
     @Override
