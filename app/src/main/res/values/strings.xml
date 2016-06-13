@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">WhoYaGonnaCall</string>
+    <string name="search_hint">Search for contacts...</string>
+
+</resources>
