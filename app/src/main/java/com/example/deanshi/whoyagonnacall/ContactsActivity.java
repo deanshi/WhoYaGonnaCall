@@ -1,13 +1,17 @@
 package com.example.deanshi.whoyagonnacall;
 
+import android.Manifest;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,8 +28,11 @@ import butterknife.ButterKnife;
 public class ContactsActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String[] GETTING_FROM = new String[] { ContactsContract.Contacts.DISPLAY_NAME };
-    private static final int[] POSTING_TO = new int[] { android.R.id.text1 };
-    private static final String[] PROJECTION = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME };
+    private static final int[] POSTING_TO = new int[] { android.R.id.text1, android.R.id.text2 };
+    private static final String[] PROJECTION = new String[] {
+            ContactsContract.Contacts._ID,
+            ContactsContract.Contacts.DISPLAY_NAME
+    };
     private static String SELECTION = "((" +
             ContactsContract.Contacts.DISPLAY_NAME + " NOTNULL) AND (" +
             ContactsContract.Contacts.DISPLAY_NAME + " != '') AND (" +
@@ -42,6 +49,17 @@ public class ContactsActivity extends ListActivity implements LoaderManager.Load
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) !=
+                PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
         ButterKnife.bind(this);
@@ -97,7 +115,8 @@ public class ContactsActivity extends ListActivity implements LoaderManager.Load
         } else {
             contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_FILTER_URI, Uri.encode(contactName));
         }
-        return new CursorLoader(this, contactUri, PROJECTION, SELECTION, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
+        return new CursorLoader(this, contactUri, PROJECTION, SELECTION, null,
+                                ContactsContract.Contacts.DISPLAY_NAME + " ASC");
     }
 
     @Override
@@ -111,10 +130,12 @@ public class ContactsActivity extends ListActivity implements LoaderManager.Load
     }
 
     public void onListItemClick(ListView l, View v, int position, long id) {
-        // Do something
+        // Need to figure out how to pull Phone Number and Name to display/use within the application
+        // Must look into the Projection/Selection/Data fields.
+
+        Intent callPhoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "856-912-8623"));
+        startActivity(callPhoneIntent);
     }
-
-
 }
 
 
